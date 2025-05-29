@@ -1,0 +1,16 @@
+{
+  "name": "competition",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Bertil Frigaard",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "competition": "file:",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0"
+  }
+}
