@@ -1,9 +1,10 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
     return (
         <>
-            <div className="bg-black py-15">
+            <div className="bg-black py-15 xl:h-lvh">
                 <div className="p-6 sm:p-10 sm:py-20 sm:px-30 flex flex-col lg:flex-row gap-10 lg:gap-20 items-center justify-center">
                     <div className="flex flex-col items-start justify-center gap-6 sm:gap-10 w-full lg:w-auto">
                         <h1 className="font-extrabold text-4xl sm:text-6xl font-martian-mono text-white">
@@ -17,9 +18,11 @@ export default function Home() {
                                 And press your limits
                             </h2>
                         </div>
-                        <button className="bg-primary font-medium px-5 sm:px-7 py-2 rounded-4xl cursor-pointer transition ease-in-out hover:duration-300 hover:scale-110 active:duration-100 active:scale-90">
-                            Try for free
-                        </button>
+                        <Link href={"/signup"}>
+                            <button className="bg-primary font-medium px-5 sm:px-7 py-2 rounded-4xl cursor-pointer transition ease-in-out hover:duration-300 hover:scale-110 active:duration-100 active:scale-90">
+                                Try for free
+                            </button>
+                        </Link>
                     </div>
                     <div className="w-full max-w-md lg:max-w-none lg:w-auto hidden lg:block shadow-gray-800 shadow-2xl rounded-4xl">
                         <Image

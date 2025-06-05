@@ -1,16 +1,31 @@
 {
-  "name": "competition",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Bertil Frigaard",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "competition": "file:",
-    "dotenv": "^16.5.0",
-    "express": "^5.1.0"
-  }
+    "name": "competition",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "dev": "ts-node src/index.ts",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Bertil Frigaard",
+    "license": "ISC",
+    "description": "",
+    "dependencies": {
+        "@types/cors": "^2.8.18",
+        "@types/express-session": "^1.18.1",
+        "@types/pg": "^8.15.2",
+        "competition": "file:",
+        "cors": "^2.8.5",
+        "crypto": "^1.0.1",
+        "dotenv": "^16.5.0",
+        "express": "^5.1.0",
+        "express-session": "^1.18.1",
+        "googleapis": "^149.0.0",
+        "pg": "^8.16.0"
+    },
+    "devDependencies": {
+        "@types/express": "^5.0.2",
+        "@types/node": "^22.15.24",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.8.3"
+    }
 }
