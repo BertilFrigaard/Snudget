@@ -1,13 +1,19 @@
 import express from "express";
-import { getAuthUrl, getState, getUserData } from "../features/auth/google/googleAuth";
-
-declare module "express-session" {
-    interface SessionData {
-        state?: string;
-    }
-}
+import { getAuthUrl, getState, getUserData } from "../services/auth/googleAuth";
+import { getUserByEmail } from "../utils/database";
+import authRoute from "../middleware/authRoute";
 
 const router = express.Router();
+
+router.post("/logout", authRoute, (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            res.status(500).json({ error: "Session could not be destroyed" });
+        } else {
+            res.status(200);
+        }
+    });
+});
 
 router.get("/google", (req, res) => {
     const state = getState();
@@ -36,7 +42,19 @@ router.get("/google/callback", async (req, res) => {
             res.redirect("/auth/google");
             return;
         }
-        res.send(userData);
+        if (!userData.email) {
+            // TODO Tell the user some info is missing before redirect
+            res.redirect("/auth/google");
+            return;
+        }
+        const user = await getUserByEmail(userData.email);
+        if (user != null) {
+            req.session.user_id = user.id;
+            res.redirect(process.env.FRONTEND_LOGIN_SUCCESS_URL as string);
+            return;
+        }
+
+        res.send("not implemented..");
     }
 });
 
