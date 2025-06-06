@@ -15,6 +15,10 @@ router.post("/logout", authRoute, (req, res) => {
     });
 });
 
+router.get("/status", (req, res) => {
+    res.json({ logged_in: req.session.user_id !== undefined && req.session.user_id !== null });
+});
+
 router.get("/google", (req, res) => {
     const state = getState();
     req.session.state = state;

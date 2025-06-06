@@ -9,8 +9,8 @@ const router = express.Router();
 router.get("/me", authRoute, async (req, res) => {
     const user = await getUserById(req.session.user_id!);
     if (!user) {
-        res.status(404).json({ error: "User not found" });
         req.session.destroy(() => {});
+        res.status(404).json({ error: "User not found" });
         return;
     }
     const { password_hash, email, ...redactedUser } = user;
