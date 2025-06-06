@@ -1,9 +1,10 @@
+import { PrivateRoute } from "@/components/Routing/PrivateRoute";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Home() {
     return (
-        <>
+        <PrivateRoute userAccess={false} redirectUrl="/dashboard">
             <div className="bg-black py-15 xl:h-lvh">
                 <div className="p-6 sm:p-10 sm:py-20 sm:px-30 flex flex-col lg:flex-row gap-10 lg:gap-20 items-center justify-center">
                     <div className="flex flex-col items-start justify-center gap-6 sm:gap-10 w-full lg:w-auto">
@@ -93,6 +94,6 @@ export default function Home() {
                     </div>
                 </div>
             </div>
-        </>
+        </PrivateRoute>
     );
 }

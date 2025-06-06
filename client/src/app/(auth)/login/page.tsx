@@ -1,5 +1,5 @@
-import { AiFillGithub } from "react-icons/ai";
-import { FcGoogle } from "react-icons/fc";
+import GoogleContinueButton from "@/components/Buttons/GoogleContinueButton";
+import GithubContinueButton from "@/components/Buttons/GithubContinueButton";
 
 function Login() {
     return (
@@ -30,12 +30,8 @@ function Login() {
                     <div className="flex-grow h-px bg-gray-300" />
                 </div>
                 <div className="flex flex-col gap-2 w-full max-w-xs">
-                    <button className="cursor-pointer flex items-center justify-center gap-2 border border-gray-300 rounded py-2 hover:bg-gray-100 transition">
-                        <FcGoogle size={22} /> Continue with Google
-                    </button>
-                    <button className="cursor-pointer flex items-center justify-center gap-2 border border-gray-300 rounded py-2 hover:bg-gray-100 transition">
-                        <AiFillGithub size={22} /> Continue with GitHub
-                    </button>
+                    <GoogleContinueButton />
+                    <GithubContinueButton />
                 </div>
             </div>
         </div>
