@@ -43,13 +43,13 @@ function Header() {
                         )) || (
                             <>
                                 <Link
-                                    href={"/profile"}
+                                    href={"/dashboard"}
                                     className={
                                         "cursor-pointer hover:-translate-y-0.5 active:scale-110 duration-200" +
                                         (loading ? " pointer-events-none" : "")
                                     }
                                 >
-                                    Profile
+                                    Dashboard
                                 </Link>
                                 <Link
                                     href={"/logout"}

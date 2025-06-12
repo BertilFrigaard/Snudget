@@ -1,9 +1,28 @@
 import express from "express";
 import { getAuthUrl, getState, getUserData } from "../services/auth/googleAuth";
-import { getUserByEmail } from "../utils/database";
+import { getUserByEmail, insertUser } from "../services/data/userService";
 import authRoute from "../middleware/authRoute";
-
 const router = express.Router();
+
+router.post("/debuglogin", async (req, res) => {
+    const email: string | undefined = req.body.email;
+
+    if (!email) {
+        res.status(400).json({ error: "Please provide email" });
+        return;
+    }
+
+    const user = await getUserByEmail(email);
+
+    if (!user) {
+        res.status(404).json({ error: "Could not find user with given email" });
+        return;
+    }
+
+    req.session.user_id = user.id;
+    res.status(200).json({ id: user.id });
+    return;
+});
 
 router.post("/logout", authRoute, (req, res) => {
     req.session.destroy((err) => {
@@ -51,14 +70,29 @@ router.get("/google/callback", async (req, res) => {
             res.redirect("/auth/google");
             return;
         }
-        const user = await getUserByEmail(userData.email);
+        let user = await getUserByEmail(userData.email);
         if (user != null) {
             req.session.user_id = user.id;
             res.redirect(process.env.FRONTEND_LOGIN_SUCCESS_URL as string);
             return;
         }
 
-        res.send("not implemented..");
+        const success = await insertUser(userData.name || "hi", userData.email, userData.picture ?? null, null);
+        if (!success) {
+            // TODO Tell the user some info is missing before redirect
+            res.redirect("/auth/google");
+            return;
+        }
+
+        user = await getUserByEmail(userData.email);
+        if (user != null) {
+            req.session.user_id = user.id;
+            res.redirect(process.env.FRONTEND_LOGIN_SUCCESS_URL as string);
+            return;
+        }
+
+        res.send("Everything failed");
+        return;
     }
 });
 

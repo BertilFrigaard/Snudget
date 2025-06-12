@@ -53,9 +53,17 @@ export function AuthProvider({
 
     const login = useCallback(async () => {
         setLoading(true);
-        const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/auth/status", {
-            credentials: "include",
-        });
+        let res;
+        try {
+            res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/auth/status", {
+                credentials: "include",
+            });
+        } catch (e) {
+            console.warn(e);
+            setError("Couldn't reach backend");
+            setLoading(false);
+            return false;
+        }
         const json = await res.json();
         if (!json) {
             setError("Something went wrong while decoding json");
