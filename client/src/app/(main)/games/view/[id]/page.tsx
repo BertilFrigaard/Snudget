@@ -44,6 +44,11 @@ function ViewGamePage() {
         });
     }, [params]);
 
+    const inviteClick = () => {
+        const link = "http://localhost:3001/games/" + game?.id + "/join";
+        navigator.clipboard.writeText(link);
+    };
+
     const scoreboard = players
         .map((player) => {
             const total = entries.filter((e) => e.user_id === player.id).reduce((sum, e) => sum + e.score_change, 0);
@@ -76,7 +81,10 @@ function ViewGamePage() {
                             <p className="text-gray-700">{game.description || "No description"}</p>
                         </div>
                         <div className="grid gap-2">
-                            <button className="text-white bg-primary font-extrabold tracking-wide rounded px-5 py-1 cursor-pointer hover:scale-105 duration-100">
+                            <button
+                                onClick={inviteClick}
+                                className="text-white bg-primary font-extrabold tracking-wide rounded px-5 py-1 cursor-pointer hover:scale-105 duration-100"
+                            >
                                 Invite <FaPaperPlane className="inline" />
                             </button>
                             {game.owner_id === user?.id && (
