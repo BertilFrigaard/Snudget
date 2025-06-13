@@ -1,12 +1,40 @@
 import { Game } from "../../types/game";
+import { RedactedGame } from "../../types/redactedGame";
+import { RedactedUser } from "../../types/redactedUser";
 import { pool } from "../../utils/database";
 
-export async function getGamesByUserId(id: string) {
-    const res = await pool.query<Game>(
-        "SELECT * FROM games WHERE id IN (SELECT game_id FROM players WHERE user_id = $1)",
+export async function getRedactedUsersInGame(id: string) {
+    const res = await pool.query<RedactedUser>(
+        "SELECT id, username, profile_picture, created_at, last_login FROM users WHERE id IN (SELECT user_id FROM players WHERE game_id = $1)",
         [id]
     );
     return res.rows;
+}
+
+export async function getRedactedGamesByUserId(id: string) {
+    const res = await pool.query<RedactedGame>(
+        "SELECT id, owner_id, title, description, created_at, ends_at FROM games WHERE id IN (SELECT game_id FROM players WHERE user_id = $1)",
+        [id]
+    );
+    return res.rows;
+}
+
+export async function getRedactedGameById(id: string) {
+    const res = await pool.query<RedactedGame>(
+        "SELECT id, owner_id, title, description, created_at, ends_at FROM games WHERE id = $1",
+        [id]
+    );
+    return res.rowCount === 1 ? res.rows[0] : null;
+}
+
+export async function getGameById(id: string) {
+    const res = await pool.query<Game>("SELECT * FROM games WHERE id = $1", [id]);
+    return res.rowCount === 1 ? res.rows[0] : null;
+}
+
+export async function isGame(id: string) {
+    const res = await pool.query("SELECT 1 FROM games WHERE id = $1", [id]);
+    return res.rowCount === 1;
 }
 
 export async function isUserInGame(user_id: string, game_id: string) {

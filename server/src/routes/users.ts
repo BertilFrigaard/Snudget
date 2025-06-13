@@ -3,7 +3,7 @@ import { getUserById } from "../services/data/userService";
 import { isValidUUID } from "../utils/validation";
 import { RedactedUser } from "../types/redactedUser";
 import authRoute from "../middleware/authRoute";
-import { getGamesByUserId } from "../services/data/gameService";
+import { getRedactedGamesByUserId } from "../services/data/gameService";
 
 const router = express.Router();
 
@@ -49,7 +49,7 @@ router.get("/:id/games", authRoute, async (req, res) => {
         res.status(403).json({ error: "Missing permission" });
         return;
     }
-    const games = await getGamesByUserId(req.params.id);
+    const games = await getRedactedGamesByUserId(req.params.id);
     res.json(games);
     return;
 });

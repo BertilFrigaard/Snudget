@@ -1,5 +1,4 @@
 "use client";
-import { PrivateRoute } from "@/components/Routing/PrivateRoute";
 import { UseAuthContext } from "@/contexts/AuthContext";
 import { createEntry } from "@/services/entryService";
 import { getGames } from "@/services/userService";
@@ -27,6 +26,8 @@ function DashboardPage() {
         }
     }, [user]);
 
+    console.log(games);
+
     const entryFormSubmitted = async (e: FormEvent) => {
         e.preventDefault();
         if (scoreChange <= 0) {
@@ -42,14 +43,10 @@ function DashboardPage() {
     };
 
     if (!user) {
-        return (
-            <PrivateRoute>
-                <h1>Could not retrieve user information</h1>
-            </PrivateRoute>
-        );
+        return <h1>Could not retrieve user information</h1>;
     }
     return (
-        <PrivateRoute>
+        <>
             <div className="flex flex-col md:flex-row gap-8 px-4 py-8 md:px-10 md:py-12 min-h-[60vh]">
                 {/* Profile Section */}
                 <aside className="bg-primary flex flex-col items-center rounded-2xl shadow-lg p-6 w-full md:w-1/3 max-w-xs mx-auto md:mx-0">
@@ -147,7 +144,10 @@ function DashboardPage() {
                             {games.map((game) => (
                                 <li
                                     key={game.id}
-                                    className="bg-gray-100 rounded-lg p-4 shadow-sm hover:shadow transition"
+                                    className="bg-gray-100 rounded-lg p-4 shadow-sm hover:shadow transition cursor-pointer hover:scale-103"
+                                    onClick={() => {
+                                        redirect("/games/view/" + game.id);
+                                    }}
                                 >
                                     <h2 className="text-lg font-semibold text-gray-900">{game.title}</h2>
                                     <h3 className="text-sm text-primary font-bold">2. plads</h3>
@@ -160,7 +160,7 @@ function DashboardPage() {
                     )}
                 </section>
             </div>
-        </PrivateRoute>
+        </>
     );
 }
 

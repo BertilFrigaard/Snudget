@@ -1,3 +1,4 @@
+import { Entry } from "../../types/entry";
 import { pool } from "../../utils/database";
 
 export async function createEntry(user_id: string, game_id: string, score_change: number) {
@@ -7,4 +8,9 @@ export async function createEntry(user_id: string, game_id: string, score_change
         score_change,
     ]);
     console.log(res);
+}
+
+export async function getEntriesByGameId(game_id: string) {
+    const res = await pool.query<Entry>("SELECT * FROM entries WHERE game_id = $1", [game_id]);
+    return res.rows;
 }

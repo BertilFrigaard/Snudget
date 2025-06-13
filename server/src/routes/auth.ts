@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import { getAuthUrl, getState, getUserData } from "../services/auth/googleAuth";
 import { getUserByEmail, insertUser } from "../services/data/userService";
 import authRoute from "../middleware/authRoute";
@@ -29,7 +29,7 @@ router.post("/logout", authRoute, (req, res) => {
         if (err) {
             res.status(500).json({ error: "Session could not be destroyed" });
         } else {
-            res.status(200);
+            res.sendStatus(200);
         }
     });
 });
@@ -46,6 +46,17 @@ router.get("/google", (req, res) => {
 });
 
 router.get("/google/callback", async (req, res) => {
+    const successRedirect = (req: Request<any>, res: Response) => {
+        if (req.session.redirect) {
+            try {
+                res.redirect(req.session.redirect);
+                req.session.redirect = undefined;
+                return;
+            } catch (e) {}
+        }
+        res.redirect(process.env.FRONTEND_LOGIN_SUCCESS_URL as string);
+    };
+
     const code = req.query.code;
     const state = req.query.state;
     const error = req.query.error;
@@ -73,7 +84,7 @@ router.get("/google/callback", async (req, res) => {
         let user = await getUserByEmail(userData.email);
         if (user != null) {
             req.session.user_id = user.id;
-            res.redirect(process.env.FRONTEND_LOGIN_SUCCESS_URL as string);
+            successRedirect(req, res);
             return;
         }
 
@@ -87,7 +98,7 @@ router.get("/google/callback", async (req, res) => {
         user = await getUserByEmail(userData.email);
         if (user != null) {
             req.session.user_id = user.id;
-            res.redirect(process.env.FRONTEND_LOGIN_SUCCESS_URL as string);
+            successRedirect(req, res);
             return;
         }
 
