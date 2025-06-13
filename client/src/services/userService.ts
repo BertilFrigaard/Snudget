@@ -5,7 +5,7 @@ export async function getGames(userId: string) {
         const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/users/" + userId + "/games", {
             credentials: "include",
         });
-        if (res.status == 201) {
+        if (res.status == 200) {
             const games: RedactedGame[] = await res.json();
             return games;
         } else {

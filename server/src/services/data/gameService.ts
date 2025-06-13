@@ -9,6 +9,11 @@ export async function getGamesByUserId(id: string) {
     return res.rows;
 }
 
+export async function isUserInGame(user_id: string, game_id: string) {
+    const res = await pool.query("SELECT 1 FROM PLAYERS WHERE user_id = $1 AND game_id = $2", [user_id, game_id]);
+    return res.rowCount == 1;
+}
+
 export async function createGame(
     title: string,
     description: string | null,

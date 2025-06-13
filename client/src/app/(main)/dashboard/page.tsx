@@ -1,16 +1,20 @@
 "use client";
 import { PrivateRoute } from "@/components/Routing/PrivateRoute";
 import { UseAuthContext } from "@/contexts/AuthContext";
+import { createEntry } from "@/services/entryService";
 import { getGames } from "@/services/userService";
 import { RedactedGame } from "@/types/redactedGame";
 import { RedactedUser } from "@/types/redactedUser";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 function DashboardPage() {
     const { user } = UseAuthContext();
     const [games, setGames] = useState<null | RedactedGame[]>(null);
+
+    const [scoreChange, setScoreChange] = useState(0);
+    const [selectGameId, setSelectGameId] = useState("");
 
     useEffect(() => {
         const updateGames = async (user: RedactedUser) => {
@@ -22,6 +26,20 @@ function DashboardPage() {
             setGames([]);
         }
     }, [user]);
+
+    const entryFormSubmitted = async (e: FormEvent) => {
+        e.preventDefault();
+        if (scoreChange <= 0) {
+            console.log("Score change must be larger than 0");
+            return;
+        }
+        if (selectGameId.length == 0) {
+            console.log("Please select a game");
+            return;
+        }
+
+        createEntry(selectGameId, scoreChange);
+    };
 
     if (!user) {
         return (
@@ -60,7 +78,39 @@ function DashboardPage() {
                         </div>
                     </div>
                     <h2 className="mt-4 text-xl font-bold text-gray-900">{user.username}</h2>
-                    {/* Add more profile info here if needed */}
+                    <form className="mt-10 grid space-y-2" onSubmit={entryFormSubmitted}>
+                        <h2 className="text-center font-bold">Make entry</h2>
+                        <input
+                            type="number"
+                            value={scoreChange}
+                            onChange={(e) => {
+                                setScoreChange(Number(e.target.value));
+                            }}
+                            className="bg-white rounded"
+                        />
+                        <select
+                            name=""
+                            id=""
+                            value={selectGameId}
+                            onChange={(e) => {
+                                setSelectGameId(e.target.value);
+                            }}
+                            className="bg-white rounded"
+                        >
+                            <option value="" disabled>
+                                Select Game
+                            </option>
+                            {games &&
+                                games.map((game) => (
+                                    <option key={game.id} value={game.id}>
+                                        {game.title}
+                                    </option>
+                                ))}
+                        </select>
+                        <button type="submit" className="bg-white rounded mx-10 cursor-pointer">
+                            Submit
+                        </button>
+                    </form>
                 </aside>
 
                 {/* Games Section */}
@@ -87,6 +137,10 @@ function DashboardPage() {
                     {games === null ? (
                         <div className="space-y-4">
                             <h2>Loading</h2>
+                        </div>
+                    ) : games.length === 0 ? (
+                        <div className="py-10 bg-gray-100 rounded-lg p-4 shadow-sm hover:shadow transition">
+                            <h2 className="text-lg font-semibold text-gray-900">No games</h2>
                         </div>
                     ) : (
                         <ul className="space-y-4">
