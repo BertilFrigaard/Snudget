@@ -10,7 +10,7 @@ function Header() {
             <header className="fixed top-0 left-0 w-full z-20">
                 <div className="flex items-center justify-between bg-black p-2 md:p-4 text-white">
                     <Link
-                        href={"/"}
+                        href={user ? "/dashboard" : ""}
                         className={
                             "text-xl font-martian-mono font-extralight cursor-pointer" +
                             (loading ? " pointer-events-none" : "")

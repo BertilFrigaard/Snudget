@@ -2,6 +2,7 @@
 
 import { createGame } from "@/services/gameService";
 import { FormEvent, useState } from "react";
+import { redirect } from "next/navigation";
 
 function CreateGamePage() {
     const [title, setTitle] = useState("");
@@ -9,10 +10,10 @@ function CreateGamePage() {
     const [endsAt, setEndsAt] = useState("");
     const [password, setPassword] = useState("");
 
-    const formSubmit = (e: FormEvent) => {
-        console.log("hi");
+    const formSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        createGame(title, description ? description : null, password ? password : null, endsAt);
+        await createGame(title, description ? description : null, password ? password : null, endsAt);
+        redirect("/dashboard");
     };
 
     return (

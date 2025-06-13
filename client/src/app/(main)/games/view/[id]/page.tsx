@@ -2,11 +2,11 @@
 import { FaPaperPlane } from "react-icons/fa6";
 import { MdDelete } from "react-icons/md";
 import { getEntriesOfGame } from "@/services/entryService";
-import { getGameById, getPlayersInGame } from "@/services/gameService";
+import { deleteGame, getGameById, getPlayersInGame } from "@/services/gameService";
 import { Entry } from "@/types/entry";
 import { RedactedGame } from "@/types/redactedGame";
 import { RedactedUser } from "@/types/redactedUser";
-import { useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { UseAuthContext } from "@/contexts/AuthContext";
 
@@ -49,6 +49,11 @@ function ViewGamePage() {
         navigator.clipboard.writeText(link);
     };
 
+    const deleteClick = async () => {
+        await deleteGame(params.id);
+        redirect("/dashboard");
+    };
+
     const scoreboard = players
         .map((player) => {
             const total = entries.filter((e) => e.user_id === player.id).reduce((sum, e) => sum + e.score_change, 0);
@@ -88,7 +93,10 @@ function ViewGamePage() {
                                 Invite <FaPaperPlane className="inline" />
                             </button>
                             {game.owner_id === user?.id && (
-                                <button className="text-white bg-error font-extrabold tracking-wide rounded px-5 py-1 cursor-pointer hover:scale-105 duration-100">
+                                <button
+                                    onClick={deleteClick}
+                                    className="text-white bg-error font-extrabold tracking-wide rounded px-5 py-1 cursor-pointer hover:scale-105 duration-100"
+                                >
                                     Delete <MdDelete className="inline" />
                                 </button>
                             )}

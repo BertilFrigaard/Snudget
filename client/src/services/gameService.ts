@@ -45,3 +45,17 @@ export async function getPlayersInGame(id: string) {
         return null;
     }
 }
+
+export async function deleteGame(id: string) {
+    try {
+        const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/games/" + id, {
+            method: "DELETE",
+            credentials: "include",
+        });
+
+        return res.status == 200;
+    } catch (e) {
+        console.warn(e);
+        return false;
+    }
+}

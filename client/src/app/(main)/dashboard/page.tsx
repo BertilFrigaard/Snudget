@@ -26,8 +26,6 @@ function DashboardPage() {
         }
     }, [user]);
 
-    console.log(games);
-
     const entryFormSubmitted = async (e: FormEvent) => {
         e.preventDefault();
         if (scoreChange <= 0) {
@@ -38,6 +36,9 @@ function DashboardPage() {
             console.log("Please select a game");
             return;
         }
+
+        setScoreChange(0);
+        setSelectGameId("");
 
         createEntry(selectGameId, scoreChange);
     };

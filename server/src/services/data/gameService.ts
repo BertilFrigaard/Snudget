@@ -56,6 +56,11 @@ export async function createGame(
     return res.rows[0].id;
 }
 
+export async function deleteGame(id: string) {
+    const res = await pool.query("DELETE FROM games WHERE id = $1", [id]);
+    return true;
+}
+
 export async function linkGameToUser(game_id: string, user_id: string) {
     const res = await pool.query("INSERT INTO players (game_id, user_id) VALUES ($1, $2)", [game_id, user_id]);
     return true;

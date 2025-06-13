@@ -1,7 +1,8 @@
-import express from "express";
+import express, { Router } from "express";
 import authRoute from "../middleware/authRoute";
 import {
     createGame,
+    deleteGame,
     getRedactedGameById,
     getRedactedUsersInGame,
     isGame,
@@ -11,7 +12,7 @@ import {
 import { hash } from "../utils/crypto";
 import { createEntry, getEntriesByGameId } from "../services/data/entryService";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 router.post("/", authRoute, async (req, res) => {
     const user_id: string = req.session.user_id!;
@@ -23,6 +24,20 @@ router.post("/", authRoute, async (req, res) => {
     const game_id = await createGame(title, description, user_id, password ? await hash(password) : null, date);
     await linkGameToUser(game_id, user_id);
     res.status(201).json({ id: game_id });
+});
+
+router.delete("/:id", authRoute, async (req, res) => {
+    const game = await getRedactedGameById(req.params.id);
+    if (!game) {
+        res.status(404).json({ error: "Game not found" });
+        return;
+    }
+    if (game.owner_id == req.session.user_id) {
+        deleteGame(game.id);
+        res.sendStatus(200);
+    } else {
+        res.status(403).json({ error: "Not allowed" });
+    }
 });
 
 router.post("/:id/entries", authRoute, async (req, res) => {
