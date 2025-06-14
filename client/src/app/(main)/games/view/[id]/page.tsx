@@ -4,7 +4,7 @@ import { MdDelete, MdDoorFront } from "react-icons/md";
 import { getEntriesOfGame } from "@/services/entryService";
 import { deleteGame, getGameById, getPlayersInGame } from "@/services/gameService";
 import CustomLineChart from "@/components/Charts/CustomLineChart";
-import { Entry } from "@/types/entry";
+import { Entry } from "@/types/entryTypes";
 import { RedactedGame } from "@/types/redactedGame";
 import { RedactedUser } from "@/types/redactedUser";
 import { redirect, useParams } from "next/navigation";

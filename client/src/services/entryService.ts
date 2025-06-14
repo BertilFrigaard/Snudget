@@ -1,4 +1,4 @@
-import { Entry } from "@/types/entry";
+import { Entry } from "@/types/entryTypes";
 
 export async function createEntry(game_id: string, score_change: number) {
     try {
