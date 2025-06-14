@@ -1,41 +1,58 @@
-import GoogleContinueButton from "@/components/Buttons/GoogleContinueButton";
-import GithubContinueButton from "@/components/Buttons/GithubContinueButton";
+"use client";
 
-function Login() {
+import GoogleContinueButton from "@/components/Buttons/GoogleContinueButton";
+import SlimSection from "@/components/Sections/SlimSection/SlimSection";
+
+export default function LoginPage() {
     return (
-        <div className="min-h-screen flex flex-col md:flex-row bg-primary">
-            <div className="flex flex-1 flex-col justify-center items-center bg-white px-8 py-12">
-                <h2 className="text-3xl font-bold mb-6 font-martian-mono">Log in</h2>
-                <form className="w-full max-w-xs flex flex-col gap-4">
+        <SlimSection title="Welcome back" subtitle="Great to see you again! Log in to your Snudget account here.">
+            <form className="space-y-6">
+                <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                        Email <span className="text-error">*</span>
+                    </label>
                     <input
+                        id="email"
                         type="email"
-                        placeholder="Email"
-                        className="border border-gray-300 rounded px-4 py-2 focus:outline-primary"
+                        required
+                        className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                     />
+                </div>
+
+                <div>
+                    <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                        Password <span className="text-error">*</span>
+                    </label>
                     <input
+                        id="password"
                         type="password"
-                        placeholder="Password"
-                        className="border border-gray-300 rounded px-4 py-2 focus:outline-primary"
+                        required
+                        className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                     />
-                    <button
-                        type="submit"
-                        className="cursor-pointer bg-primary text-black font-bold py-2 rounded hover:bg-green-400 transition"
-                    >
-                        Log In
-                    </button>
-                </form>
-                <div className="flex items-center my-4 w-full max-w-xs">
-                    <div className="flex-grow h-px bg-gray-300" />
-                    <span className="mx-2 text-gray-400 text-sm">or</span>
-                    <div className="flex-grow h-px bg-gray-300" />
                 </div>
-                <div className="flex flex-col gap-2 w-full max-w-xs">
-                    <GoogleContinueButton />
-                    <GithubContinueButton />
-                </div>
+
+                <button type="submit" className="cta-btn-full w-full">
+                    Log in
+                </button>
+            </form>
+
+            {/* Divider */}
+            <div className="flex items-center my-6">
+                <div className="flex-grow h-px bg-gray-200"></div>
+                <span className="mx-4 text-sm text-gray-400">or</span>
+                <div className="flex-grow h-px bg-gray-200"></div>
             </div>
-        </div>
+
+            {/* Google login */}
+            <GoogleContinueButton />
+
+            {/* Footer */}
+            <p className="text-sm text-center text-gray-500 mt-6">
+                {"Don't have an account? "}
+                <a href="/signup" className="text-primary font-medium hover:underline">
+                    Sign up
+                </a>
+            </p>
+        </SlimSection>
     );
 }
-
-export default Login;

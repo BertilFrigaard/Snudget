@@ -2,6 +2,7 @@
 
 import { UseAuthContext } from "@/contexts/AuthContext";
 import { redirect } from "next/navigation";
+import Loading from "../Sections/Loading/Loading";
 
 export function PrivateRoute({
     children,
@@ -14,7 +15,7 @@ export function PrivateRoute({
 }>) {
     const { user, loading } = UseAuthContext();
     if (loading) {
-        return <h1>Loading...</h1>;
+        return <Loading />;
     }
     if (user && userAccess) {
         return children;

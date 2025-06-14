@@ -1,12 +1,35 @@
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Martian+Mono:wght@100..800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
 @import "tailwindcss";
 
 @theme {
     --font-ibm-plex-mono: "IBM Plex Mono", monospace;
     --font-martian-mono: Martian Mono, monospace;
+    --font-poppins: Poppins, monospace;
 
-    --color-primary: #3bed4c;
-    --color-secondary: #ffffff;
+    --color-primary: #58cc02;
+    --color-secondary: #2e7d32;
+
     --color-error: #ff6b61;
+
+    --color-gray-text: #666666;
+
+    --color-background: #ffffff;
+    --color-card-background: #fafafa;
+}
+
+.cta-btn-full {
+    @apply bg-primary cursor-pointer text-white font-extrabold text-lg px-6 py-2 rounded-lg hover:scale-105 transition-transform;
+}
+.cta-btn-outline {
+    @apply border border-primary cursor-pointer text-primary font-semibold px-6 py-2 rounded-lg hover:bg-primary hover:text-white;
+}
+.cta-btn-none {
+    @apply cursor-pointer text-gray-700 font-semibold text-lg hover:scale-105 transition-transform;
+}
+
+.cta-btn-colorless {
+    @apply cursor-pointer font-extrabold text-lg px-6 py-2 rounded-lg hover:scale-105 transition-transform;
 }

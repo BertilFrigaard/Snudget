@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
-import Header from "@/components/Sections/Header/Header";
-import Footer from "@/components/Sections/Footer/Footer";
 
 export const metadata: Metadata = {
     title: "Competition",
@@ -16,12 +14,10 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={"antialiased"}>
+            <body className={"antialiased bg-card-background"}>
                 <div className="">
                     <AuthProvider>
-                        <Header />
-                        <main className="min-h-screen">{children}</main>
-                        <Footer />
+                        <main className="min-h-screen font-poppins">{children}</main>
                     </AuthProvider>
                 </div>
             </body>

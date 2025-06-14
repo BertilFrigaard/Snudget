@@ -1,51 +1,74 @@
-import GoogleContinueButton from "@/components/Buttons/GoogleContinueButton";
-import GithubContinueButton from "@/components/Buttons/GithubContinueButton";
+"use client";
 
-function Signup() {
+import Link from "next/link";
+import GoogleContinueButton from "@/components/Buttons/GoogleContinueButton";
+import SlimSection from "@/components/Sections/SlimSection/SlimSection";
+
+export default function SignupPage() {
     return (
-        <div className="min-h-screen flex flex-col md:flex-row">
-            <div className="flex flex-1 flex-col justify-center items-center bg-white px-8 py-12">
-                <h2 className="text-3xl font-bold mb-6 font-martian-mono">Sign up</h2>
-                <form className="w-full max-w-xs flex flex-col gap-4">
+        <SlimSection
+            title="Welcome to Snudget"
+            subtitle="Start competing with you'r friends today by creating your account here."
+        >
+            <form className="space-y-6 mt-4">
+                <div>
+                    <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                        Username <span className="text-error">*</span>
+                    </label>
                     <input
+                        id="username"
                         type="text"
-                        placeholder="Username"
-                        className="border border-gray-300 rounded px-4 py-2 focus:outline-primary"
+                        required
+                        className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                     />
+                </div>
+
+                <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                        Email <span className="text-error">*</span>
+                    </label>
                     <input
+                        id="email"
                         type="email"
-                        placeholder="Email"
-                        className="border border-gray-300 rounded px-4 py-2 focus:outline-primary"
+                        required
+                        className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                     />
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        className="border border-gray-300 rounded px-4 py-2 focus:outline-primary"
-                    />
-                    <input
-                        type="password"
-                        placeholder="Confirm Password"
-                        className="border border-gray-300 rounded px-4 py-2 focus:outline-primary"
-                    />
-                    <button
-                        type="submit"
-                        className="cursor-pointer bg-primary text-black font-bold py-2 rounded hover:bg-green-400 transition"
-                    >
-                        Sign Up
-                    </button>
-                </form>
-                <div className="flex items-center my-4 w-full max-w-xs">
-                    <div className="flex-grow h-px bg-gray-300" />
-                    <span className="mx-2 text-gray-400 text-sm">or</span>
-                    <div className="flex-grow h-px bg-gray-300" />
                 </div>
-                <div className="flex flex-col gap-2 w-full max-w-xs">
-                    <GoogleContinueButton />
-                    <GithubContinueButton />
+
+                <div>
+                    <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                        Password <span className="text-error">*</span>
+                    </label>
+                    <input
+                        id="password"
+                        type="password"
+                        required
+                        className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
                 </div>
+
+                <button type="submit" className="cta-btn-full w-full">
+                    Sign up
+                </button>
+            </form>
+
+            {/* Divider */}
+            <div className="flex items-center my-6">
+                <div className="flex-grow h-px bg-gray-200"></div>
+                <span className="mx-4 text-sm text-gray-400">or</span>
+                <div className="flex-grow h-px bg-gray-200"></div>
             </div>
-        </div>
+
+            {/* Google login */}
+            <GoogleContinueButton />
+
+            {/* Footer */}
+            <p className="text-sm text-center text-gray-500 mt-6">
+                Already have an account?{" "}
+                <Link href="/login" className="text-primary font-medium hover:underline">
+                    Log in
+                </Link>
+            </p>
+        </SlimSection>
     );
 }
-
-export default Signup;
