@@ -7,5 +7,6 @@ app.listen(process.env.PORT, () => {
 });
 
 process.on("SIGINT", async () => {
+    console.log("Server closed");
     process.exit(0);
 });

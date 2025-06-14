@@ -1,9 +1,10 @@
 import { Router } from "express";
-const router = Router();
 
 import authRoutes from "./auth";
 import userRoutes from "./users";
 import gameRoutes from "./games";
+
+const router = Router();
 
 router.use("/auth", authRoutes);
 router.use("/users", userRoutes);

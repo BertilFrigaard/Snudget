@@ -1,57 +1,47 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import { getUserById } from "../services/data/userService";
-import { isValidUUID } from "../utils/validation";
 import { RedactedUser } from "../types/redactedUser";
-import authRoute from "../middleware/authRoute";
+import { authRoute } from "../middleware/authRoute";
 import { getRedactedGamesByUserId } from "../services/data/gameService";
+import uuidParamRoute from "../middleware/uuidParamRoute";
+import { redactUser } from "../utils/redaction";
 
 const router = express.Router();
 
-router.get("/me", authRoute, async (req, res) => {
+router.get("/me", authRoute, async (req: Request, res: Response) => {
     const user = await getUserById(req.session.user_id!);
     if (!user) {
-        req.session.destroy(() => {});
+        req.session.destroy((err) => {
+            if (err) {
+                console.error("Failed to destroy session: " + err);
+            }
+        });
         res.status(404).json({ error: "User not found" });
         return;
     }
-    const { password_hash, email, ...redactedUser } = user;
-    res.send(redactedUser as RedactedUser);
+    res.json(redactUser(user));
 });
 
-router.get("/:id", authRoute, async (req, res) => {
-    if (!req.params.id) {
-        res.status(400).json({ error: "Missing id" });
-        return;
-    }
-    if (!isValidUUID(req.params.id)) {
-        res.status(400).json({ error: "Invalid UUID" });
-        return;
-    }
+router.get("/:id", authRoute, uuidParamRoute, async (req: Request, res: Response) => {
     const user = await getUserById(req.params.id);
     if (!user) {
         res.status(404).json({ error: "User not found" });
         return;
     }
-    const { password_hash, email, ...redactedUser } = user;
-    res.send(redactedUser as RedactedUser);
+    res.json(redactUser(user));
 });
 
-router.get("/:id/games", authRoute, async (req, res) => {
-    if (!req.params.id) {
-        res.status(400).json({ error: "Missing id" });
-        return;
-    }
-    if (!isValidUUID(req.params.id)) {
-        res.status(400).json({ error: "Invalid UUID" });
-        return;
-    }
+router.get("/:id/games", authRoute, uuidParamRoute, async (req: Request, res: Response) => {
     if (req.params.id !== req.session.user_id) {
         res.status(403).json({ error: "Missing permission" });
         return;
     }
     const games = await getRedactedGamesByUserId(req.params.id);
+    if (games === null) {
+        res.status(500).json({ error: "Something went wrong" });
+        return;
+    }
     res.json(games);
-    return;
 });
 
 export default router;

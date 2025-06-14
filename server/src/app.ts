@@ -1,11 +1,10 @@
 import express from "express";
 import session from "express-session";
 const app = express();
-import { CipherKey } from "crypto";
 import cors from "cors";
 
 import routes from "./routes/index";
-import debugRoute from "./middleware/debugRoute";
+import { debugRoute } from "./middleware/debugRoute";
 
 app.use(express.json());
 app.use(
@@ -15,11 +14,15 @@ app.use(
     })
 );
 
+if (!process.env.SESSION_SECRET) {
+    throw new Error("Session environment variables missing");
+}
+
 app.use(
     session({
-        secret: process.env.SESSION_SECRET as CipherKey,
+        secret: process.env.SESSION_SECRET!,
         resave: false,
-        saveUninitialized: true,
+        saveUninitialized: false,
         cookie: { secure: false },
     })
 );

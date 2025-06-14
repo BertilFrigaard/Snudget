@@ -1,5 +1,10 @@
-import { google } from "googleapis";
+import { google, oauth2_v2 } from "googleapis";
 import crypto from "crypto";
+import { logError } from "../../utils/logging";
+
+if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET || !process.env.GOOGLE_REDIRECT_URL) {
+    throw new Error("Google authentication enviroment variables not set");
+}
 
 const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
@@ -13,11 +18,11 @@ const scopes = [
     "openid",
 ];
 
-export function getState() {
+export function getState(): string {
     return crypto.randomBytes(32).toString("hex");
 }
 
-export function getAuthUrl(state: string) {
+export function getAuthUrl(state: string): string {
     return oauth2Client.generateAuthUrl({
         access_type: "offline",
         scope: scopes,
@@ -26,7 +31,7 @@ export function getAuthUrl(state: string) {
     });
 }
 
-export async function getUserData(code: string) {
+export async function getUserData(code: string): Promise<oauth2_v2.Schema$Userinfo | null> {
     try {
         let { tokens } = await oauth2Client.getToken(code);
         oauth2Client.setCredentials(tokens);
@@ -35,7 +40,7 @@ export async function getUserData(code: string) {
         const userinfo = await oauth2.userinfo.get();
         return userinfo.data;
     } catch (e) {
-        console.log(e);
+        logError(e);
         return null;
     }
 }

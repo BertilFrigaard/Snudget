@@ -1,5 +1,5 @@
-import express, { Router } from "express";
-import authRoute from "../middleware/authRoute";
+import express, { Request, Response, Router } from "express";
+import { authRoute } from "../middleware/authRoute";
 import {
     createGame,
     deleteGame,
@@ -11,52 +11,80 @@ import {
 } from "../services/data/gameService";
 import { hash } from "../utils/crypto";
 import { createEntry, getEntriesByGameId } from "../services/data/entryService";
-
+import uuidParamRoute from "../middleware/uuidParamRoute";
+import { logError } from "../utils/logging";
 const router: Router = express.Router();
 
-router.post("/", authRoute, async (req, res) => {
+router.post("/", authRoute, async (req: Request, res: Response) => {
     const user_id: string = req.session.user_id!;
+    if (typeof req.body.title !== "string" || typeof req.body.date !== "string") {
+        res.sendStatus(400);
+        return;
+    }
     const title: string = req.body.title;
     const description: string | null = req.body.description;
     const password: string | null = req.body.password;
     const date: Date = new Date(req.body.date);
-
-    const game_id = await createGame(title, description, user_id, password ? await hash(password) : null, date);
-    await linkGameToUser(game_id, user_id);
-    res.status(201).json({ id: game_id });
+    if (isNaN(date.getTime())) {
+        res.sendStatus(400);
+        return;
+    }
+    try {
+        const game_id = await createGame(title, description, user_id, password ? await hash(password) : null, date);
+        if (game_id) {
+            await linkGameToUser(game_id, user_id);
+            res.status(201).json({ id: game_id });
+        } else {
+            res.status(500).json({ error: "Failed to create game" });
+        }
+    } catch (e: unknown) {
+        logError(e);
+        res.status(500).json({ error: "Something went wrong" });
+    }
 });
 
-router.delete("/:id", authRoute, async (req, res) => {
+router.delete("/:id", authRoute, uuidParamRoute, async (req: Request, res: Response) => {
     const game = await getRedactedGameById(req.params.id);
     if (!game) {
         res.status(404).json({ error: "Game not found" });
         return;
     }
     if (game.owner_id == req.session.user_id) {
-        deleteGame(game.id);
-        res.sendStatus(200);
+        if (await deleteGame(game.id)) {
+            res.sendStatus(200);
+        } else {
+            res.status(500).json({ error: "Something went wrong" });
+        }
     } else {
         res.status(403).json({ error: "Not allowed" });
     }
 });
 
-router.post("/:id/entries", authRoute, async (req, res) => {
+router.post("/:id/entries", authRoute, uuidParamRoute, async (req: Request, res: Response) => {
     const user_id: string = req.session.user_id!;
     const game_id: string = req.params.id;
     if (!req.body.score_change) {
         res.sendStatus(400);
         return;
     }
-    const score_change: number = req.body.score_change;
+    const score_change: number = Number(req.body.score_change);
+    if (Number.isNaN(score_change)) {
+        res.status(400).json({ error: "Invalid number score_change" });
+        return;
+    }
     if (await isUserInGame(user_id, game_id)) {
-        await createEntry(user_id, game_id, score_change);
-        res.sendStatus(201);
+        const success = await createEntry(user_id, game_id, score_change);
+        if (success) {
+            res.sendStatus(201);
+        } else {
+            res.status(500).json({ error: "Something went wrong" });
+        }
         return;
     }
     res.status(403).json({ error: "Not allowed" });
 });
 
-router.get("/:id", authRoute, async (req, res) => {
+router.get("/:id", authRoute, uuidParamRoute, async (req: Request, res: Response) => {
     const user_id: string = req.session.user_id!;
     const game_id: string = req.params.id;
     if (await isUserInGame(user_id, game_id)) {
@@ -71,27 +99,41 @@ router.get("/:id", authRoute, async (req, res) => {
     res.status(403).json({ error: "Not allowed" });
 });
 
-router.get("/:id/entries", authRoute, async (req, res) => {
+router.get("/:id/entries", authRoute, uuidParamRoute, async (req: Request, res: Response) => {
     const user_id: string = req.session.user_id!;
     const game_id: string = req.params.id;
     if (await isUserInGame(user_id, game_id)) {
-        res.json(await getEntriesByGameId(game_id));
+        const entries = await getEntriesByGameId(game_id);
+        if (entries === null) {
+            res.status(500).json({ error: "Something went wrong" });
+            return;
+        }
+        res.json(entries);
         return;
     }
     res.status(403).json({ error: "Not allowed" });
 });
 
-router.get("/:id/players", authRoute, async (req, res) => {
+router.get("/:id/players", authRoute, uuidParamRoute, async (req: Request, res: Response) => {
     const user_id: string = req.session.user_id!;
     const game_id: string = req.params.id;
     if (await isUserInGame(user_id, game_id)) {
-        res.json(await getRedactedUsersInGame(game_id));
+        const users = await getRedactedUsersInGame(game_id);
+        if (users === null) {
+            res.status(500).json({ error: "Something went wrong" });
+            return;
+        }
+        res.json(users);
         return;
     }
     res.status(403).json({ error: "Not allowed" });
 });
 
-router.get("/:id/join", async (req, res) => {
+router.get("/:id/join", uuidParamRoute, async (req: Request, res: Response) => {
+    // TODO implement frontend redirection to display detailed error
+    if (!process.env.FRONTEND_URL) {
+        throw new Error("URL enviroment variables not set");
+    }
     const game_id: string = req.params.id;
     if (!req.session.user_id) {
         req.session.redirect = req.originalUrl;
@@ -100,13 +142,14 @@ router.get("/:id/join", async (req, res) => {
     }
     if (await isGame(game_id)) {
         if (!(await isUserInGame(req.session.user_id, game_id))) {
-            await linkGameToUser(game_id, req.session.user_id);
+            if (await linkGameToUser(game_id, req.session.user_id)) {
+                res.redirect(process.env.FRONTEND_URL + "/games/view/" + game_id);
+                return;
+            }
         }
-        res.redirect(process.env.FRONTEND_URL + "/games/view/" + game_id);
-        return;
+        res.status(500).json({ error: "Something went wrong" });
     } else {
         res.status(404).json({ error: "Game not found" });
-        return;
     }
 });
 
