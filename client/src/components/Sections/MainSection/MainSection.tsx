@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function MainSection({ children }: { children: React.ReactNode }) {
     return (
-        <div className="bg-white shadow-lg rounded-2xl p-12 mt-20 max-w-7xl mx-auto">
+        <div className="bg-white shadow-lg rounded-2xl p-12 md:mt-20 max-w-7xl mx-auto">
             {/* Header Bar */}
             <div className="flex justify-between items-center mb-12">
                 {/* Logo and Title */}

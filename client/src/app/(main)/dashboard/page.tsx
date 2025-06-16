@@ -1,10 +1,10 @@
 "use client";
+import GameCard from "@/components/Cards/GameCard";
 import MainSection from "@/components/Sections/MainSection/MainSection";
 import { UseAuthContext } from "@/contexts/AuthContext";
 import { getGames } from "@/services/userService";
 import { RedactedGame } from "@/types/redactedGame";
 import { RedactedUser } from "@/types/redactedUser";
-import { formatDate } from "@/utils/formatUtils";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -63,21 +63,7 @@ function DashboardPage() {
                     // Case 3: Games loaded
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {games.map((game) => (
-                            <div key={game.id} className="border border-gray-200 rounded-xl p-6 shadow-sm">
-                                <h3 className="text-lg font-semibold text-gray-900 mb-1">{game.title}</h3>
-                                <p className="text-sm text-gray-500 mb-2">You’re 3rd 🥉</p>
-                                <div className="flex justify-between items-center mt-4">
-                                    <div className="text-sm text-gray-700">
-                                        {"Ends " + formatDate(new Date(game.ends_at))}
-                                    </div>
-                                    <Link
-                                        href={`/games/view/${game.id}`}
-                                        className="text-primary font-medium hover:underline text-sm"
-                                    >
-                                        View ➤
-                                    </Link>
-                                </div>
-                            </div>
+                            <GameCard key={game.id} game={game} />
                         ))}
                     </div>
                 )}

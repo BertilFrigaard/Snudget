@@ -8,7 +8,21 @@ export function formatDate(date: Date): string {
     });
 }
 
-export function prepareForLineChart(entries: Entry[], players: RedactedUser[]) {
+export function getNumberEnd(number: number): string {
+    if (number === 1) {
+        return "st";
+    } else if (number === 2) {
+        return "nd";
+    } else if (number === 3) {
+        return "rd";
+    } else if (number >= 4) {
+        return "th";
+    } else {
+        return "";
+    }
+}
+
+export function prepareForLineChart(entries: Entry[], players: RedactedUser[]): EntryLinePoint[] {
     entries.sort((a, b) => {
         return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
     });

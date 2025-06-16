@@ -6,7 +6,7 @@ export default function Home() {
     // TODO fix the footer
     return (
         <PrivateRoute userAccess={false} redirectUrl="/dashboard">
-            <div className="bg-white shadow-lg rounded-2xl p-12 pb-20 my-30 max-w-6xl mx-auto">
+            <div className="bg-white shadow-lg rounded-2xl p-12 pb-20 mb-30 lg:my-30 max-w-6xl mx-auto">
                 {/* Header Bar */}
                 <div className="flex justify-between items-center mb-12">
                     {/* Logo and Title */}
