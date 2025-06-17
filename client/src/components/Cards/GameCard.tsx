@@ -45,7 +45,7 @@ export default function GameCard({ game }: { game: RedactedGame }) {
                     ? "Loading Rank"
                     : rank === 0
                     ? "Awaiting entries"
-                    : "You're " + rank + "'" + getNumberEnd(rank)}
+                    : "You're " + rank + getNumberEnd(rank)}
             </p>
             <div className="flex justify-between items-center mt-4">
                 <div className="text-sm text-gray-700">{"Ends " + formatDate(new Date(game.ends_at))}</div>

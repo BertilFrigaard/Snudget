@@ -21,15 +21,15 @@
 }
 
 .cta-btn-full {
-    @apply bg-primary cursor-pointer text-white font-extrabold text-lg px-6 py-2 rounded-lg hover:scale-105 transition-transform;
+    @apply self-center-safe bg-primary cursor-pointer text-white font-semibold text-lg px-6 py-2 rounded-lg hover:scale-105 transition-transform;
 }
 .cta-btn-outline {
-    @apply border border-primary cursor-pointer text-primary font-semibold px-6 py-2 rounded-lg hover:bg-primary hover:text-white;
+    @apply self-center-safe border border-primary cursor-pointer text-primary font-semibold px-6 py-2 rounded-lg hover:bg-primary hover:text-white;
 }
 .cta-btn-none {
-    @apply cursor-pointer text-gray-700 font-semibold text-lg self-center-safe hover:scale-105 transition-transform;
+    @apply self-center-safe cursor-pointer text-gray-700 font-semibold text-lg hover:scale-105 transition-transform;
 }
 
 .cta-btn-colorless {
-    @apply cursor-pointer font-extrabold text-lg px-6 py-2 rounded-lg hover:scale-105 transition-transform;
+    @apply self-center-safe cursor-pointer font-semibold text-lg px-6 py-2 rounded-lg hover:scale-105 transition-transform;
 }

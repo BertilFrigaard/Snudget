@@ -97,7 +97,7 @@ function ViewGamePage() {
             {/* Header: Game Title + Actions */}
             <div className="flex flex-col md:flex-row justify-between gap-6 mb-12">
                 <div>
-                    <h1 className="text-3xl font-bold mb-2">{game.title}</h1>
+                    <h1 className="text-4xl font-bold mb-2">{game.title}</h1>
                     <h2 className="text-primary font-semibold text-lg mb-1">
                         Ends {formatDate(new Date(game.ends_at))}
                     </h2>
