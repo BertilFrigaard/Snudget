@@ -31,7 +31,7 @@ function DashboardPage() {
         <MainSection>
             {/* Welcome & Actions */}
             <div className="mb-12">
-                <h1 className="text-4xl font-bold text-gray-900 mb-2">Welcome back, Bertil</h1>
+                <h1 className="text-4xl font-bold text-gray-900 mb-2">Welcome back, {user.username}</h1>
                 <p className="text-gray-600 text-lg mb-6">
                     Ready to dominate your goals? Start a new challenge or continue where you left off.
                 </p>

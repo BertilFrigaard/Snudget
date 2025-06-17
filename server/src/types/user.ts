@@ -4,6 +4,7 @@ export type User = {
     email: string;
     password_hash?: string | null;
     profile_picture?: string | null;
+    verified: boolean;
     created_at: Date;
     last_login?: Date | null;
 };

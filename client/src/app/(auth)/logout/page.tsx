@@ -1,4 +1,5 @@
 "use client";
+import SlimSection from "@/components/Sections/SlimSection/SlimSection";
 import { UseAuthContext } from "@/contexts/AuthContext";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
@@ -9,9 +10,9 @@ function LogoutPage() {
         logout().then(redirect("/"));
     }, [logout]);
     return (
-        <div className="min-h-screen justify-items-center">
-            <h1>Logging out</h1>
-        </div>
+        <SlimSection title="Logging out..." subtitle="Please wait for the logout process to finish">
+            {""}
+        </SlimSection>
     );
 }
 
