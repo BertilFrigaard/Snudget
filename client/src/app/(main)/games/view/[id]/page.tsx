@@ -13,6 +13,7 @@ import { UseAuthContext } from "@/contexts/AuthContext";
 import MainSection from "@/components/Sections/MainSection/MainSection";
 import Loading from "@/components/Sections/Loading/Loading";
 import { formatDate } from "@/utils/formatUtils";
+import SlimSection from "@/components/Sections/SlimSection/SlimSection";
 
 function ViewGamePage() {
     const params = useParams<{ id: string }>();
@@ -21,6 +22,7 @@ function ViewGamePage() {
     const [game, setGame] = useState<RedactedGame | undefined>(undefined);
     const [players, setPlayers] = useState<RedactedUser[]>([]);
     const [entries, setEntries] = useState<Entry[]>([]);
+    const [scoreboard, setScoreboard] = useState<{ player: RedactedUser; total: number }[]>([]);
 
     useEffect(() => {
         getGameById(params.id).then((game) => {
@@ -48,6 +50,21 @@ function ViewGamePage() {
         });
     }, [params]);
 
+    useEffect(() => {
+        if (players && entries) {
+            setScoreboard(
+                players
+                    .map((player) => {
+                        const total = entries
+                            .filter((e) => e.user_id === player.id)
+                            .reduce((sum, e) => sum + e.score_change, 0);
+                        return { player, total };
+                    })
+                    .sort((a, b) => b.total - a.total)
+            );
+        }
+    }, [players, entries]);
+
     const inviteClick = () => {
         const link = "http://localhost:3001/games/" + game?.id + "/join";
         navigator.clipboard.writeText(link);
@@ -62,21 +79,18 @@ function ViewGamePage() {
         throw new Error("Not implemented");
     };
 
-    const scoreboard = players
-        .map((player) => {
-            const total = entries.filter((e) => e.user_id === player.id).reduce((sum, e) => sum + e.score_change, 0);
-            return { player, total };
-        })
-        .sort((a, b) => b.total - a.total);
-
     if (error) {
-        // TODO handle error
-        return <h1>error</h1>;
+        return (
+            <SlimSection title="Something went wrong" subtitle={"Error: " + error}>
+                {""}
+            </SlimSection>
+        );
     }
 
-    if (!game) {
+    if (!game || !entries || !players) {
         return <Loading />;
     }
+    console.log(game, entries, players);
 
     return (
         <MainSection>

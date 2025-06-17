@@ -143,7 +143,6 @@ router.get("/google", (req: Request, res: Response) => {
 });
 
 router.get("/google/callback", async (req, res) => {
-    // TODO implement frontend redirection to display detailed error
     const successRedirect = (req: Request, res: Response) => {
         if (!process.env.FRONTEND_LOGIN_SUCCESS_URL) {
             throw new Error("URL environment variables not set");
@@ -164,34 +163,27 @@ router.get("/google/callback", async (req, res) => {
     const state = req.query.state;
     const error = req.query.error;
     if (error) {
-        // TODO Do something else here
         logError(error);
-        res.status(500).json({ error: "Something went wrong" });
+        res.redirect(process.env.FRONTEND_ERROR_URL + "Unknown error");
         return;
     } else if (req.session.state !== state) {
-        // TODO Redirect to frontend error display instead
-        console.warn("Mismatch in google auth state");
-        res.redirect("/auth/google");
+        res.redirect(process.env.FRONTEND_ERROR_URL + "Mismatch in google auth state");
         return;
     } else {
         delete req.session.state;
         const userData = await getUserData(code as string);
         if (!userData) {
-            // TODO Redirect to frontend error display instead
-            console.warn("UserData in google auth was empty");
-            res.redirect("/auth/google");
+            res.redirect(process.env.FRONTEND_ERROR_URL + "UserData from google was empty");
             return;
         }
         if (!userData.email) {
-            // TODO Redirect to frontend error display instead
-            console.warn("Google Auth: UserData exists but is missing .email");
-            res.redirect("/auth/google");
+            res.redirect(process.env.FRONTEND_ERROR_URL + "UserData from google is missing");
             return;
         }
         let user = await getUserByEmail(userData.email);
         if (user !== null) {
             if (user.password_hash) {
-                res.status(403).json({ error: "Wrong username or password" });
+                res.redirect(process.env.FRONTEND_ERROR_URL + "Please sign in with password");
                 return;
             } else {
                 req.session.user_id = user.id;
@@ -201,17 +193,14 @@ router.get("/google/callback", async (req, res) => {
         }
 
         if (!userData.name) {
-            // TODO Redirect to frontend error display instead
-            console.warn("Google Auth: UserData exists but is missing .name");
-            res.redirect("/auth/google");
+            res.redirect(process.env.FRONTEND_ERROR_URL + "UserData from google is missing");
             return;
         }
 
         const user_id = await insertUser(userData.name, userData.email, userData.picture ?? null, null, true);
         if (!user_id) {
-            // TODO Redirect to frontend error display instead
             console.warn("Google Auth: Failed to create user: " + userData.email);
-            res.redirect("/auth/google");
+            res.redirect(process.env.FRONTEND_ERROR_URL + "Failed to create user");
             return;
         }
 

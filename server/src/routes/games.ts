@@ -130,7 +130,6 @@ router.get("/:id/players", authRoute, uuidParamRoute, async (req: Request, res: 
 });
 
 router.get("/:id/join", uuidParamRoute, async (req: Request, res: Response) => {
-    // TODO implement frontend redirection to display detailed error
     if (!process.env.FRONTEND_URL) {
         throw new Error("URL enviroment variables not set");
     }
@@ -145,11 +144,16 @@ router.get("/:id/join", uuidParamRoute, async (req: Request, res: Response) => {
             if (await linkGameToUser(game_id, req.session.user_id)) {
                 res.redirect(process.env.FRONTEND_URL + "/games/view/" + game_id);
                 return;
+            } else {
+                res.redirect(process.env.FRONTEND_ERROR_URL + "Something went wrong");
             }
+        } else {
+            res.redirect(process.env.FRONTEND_ERROR_URL + "You are already participating in this game");
         }
-        res.status(500).json({ error: "Something went wrong" });
     } else {
-        res.status(404).json({ error: "Game not found" });
+        res.redirect(
+            process.env.FRONTEND_ERROR_URL + "Game not found. Please request a new invite link from a participant."
+        );
     }
 });
 

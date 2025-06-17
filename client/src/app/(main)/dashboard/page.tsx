@@ -1,6 +1,7 @@
 "use client";
 import GameCard from "@/components/Cards/GameCard";
 import MainSection from "@/components/Sections/MainSection/MainSection";
+import SlimSection from "@/components/Sections/SlimSection/SlimSection";
 import { UseAuthContext } from "@/contexts/AuthContext";
 import { getGames } from "@/services/userService";
 import { RedactedGame } from "@/types/redactedGame";
@@ -9,7 +10,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 function DashboardPage() {
-    const { user } = UseAuthContext();
+    const { user, error } = UseAuthContext();
     const [games, setGames] = useState<null | RedactedGame[]>(null);
 
     useEffect(() => {
@@ -24,8 +25,11 @@ function DashboardPage() {
     }, [user]);
 
     if (!user) {
-        // TODO show error instead
-        return <h1>Could not retrieve user information</h1>;
+        return (
+            <SlimSection title="Something went wrong" subtitle={"Error: " + error}>
+                {""}
+            </SlimSection>
+        );
     }
     return (
         <MainSection>

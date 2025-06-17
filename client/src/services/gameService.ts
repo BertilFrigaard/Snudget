@@ -23,6 +23,9 @@ export async function getGameById(id: string) {
         const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/games/" + id, {
             credentials: "include",
         });
+        if (res.status !== 200) {
+            return null;
+        }
         const game: RedactedGame = await res.json();
 
         return game;
@@ -37,6 +40,9 @@ export async function getPlayersInGame(id: string) {
         const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/games/" + id + "/players", {
             credentials: "include",
         });
+        if (res.status !== 200) {
+            return null;
+        }
         const players: RedactedUser[] = await res.json();
 
         return players;
