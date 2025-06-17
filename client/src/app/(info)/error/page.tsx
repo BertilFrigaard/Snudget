@@ -1,7 +1,7 @@
 "use client";
 import SlimSection from "@/components/Sections/SlimSection/SlimSection";
 import { redirect, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 export default function ErrorPage() {
     const searchParams = useSearchParams();
@@ -15,8 +15,10 @@ export default function ErrorPage() {
         }
     }, [searchParams]);
     return (
-        <SlimSection title="Error" subtitle={error}>
-            {""}
-        </SlimSection>
+        <Suspense>
+            <SlimSection title="Error" subtitle={error}>
+                {""}
+            </SlimSection>
+        </Suspense>
     );
 }
