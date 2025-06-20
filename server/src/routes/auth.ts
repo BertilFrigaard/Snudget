@@ -187,7 +187,8 @@ router.get("/google/callback", async (req, res) => {
             res.redirect(process.env.FRONTEND_ERROR_URL + "UserData from google is missing");
             return;
         }
-        let user = await getUserByEmail(userData.email);
+        const email = userData.email.toLowerCase();
+        let user = await getUserByEmail(email);
         if (user !== null) {
             if (user.password_hash) {
                 res.redirect(process.env.FRONTEND_ERROR_URL + "Please sign in with password");
@@ -204,9 +205,9 @@ router.get("/google/callback", async (req, res) => {
             return;
         }
 
-        const user_id = await insertUser(userData.name, userData.email, userData.picture ?? null, null, true);
+        const user_id = await insertUser(userData.name, email, userData.picture ?? null, null, true);
         if (!user_id) {
-            console.warn("Google Auth: Failed to create user: " + userData.email);
+            console.warn("Google Auth: Failed to create user: " + email);
             res.redirect(process.env.FRONTEND_ERROR_URL + "Failed to create user");
             return;
         }
