@@ -13,7 +13,9 @@ const transporter: Transporter = nodemailer.createTransport({
 
 export async function sendVerifyLink(token: string, user_id: string, email: string) {
     const verifyLink = process.env.AUTH_VERIFY_URL + "?token=" + token + "&user_id=" + user_id;
-    email = "bertilfrigaard@gmail.com";
+    if (process.env.EMAIL_VERIFY_REDIRECT) {
+        email = process.env.EMAIL_VERIFY_REDIRECT;
+    }
     try {
         await transporter.sendMail({
             from: `"Comp Social" <${process.env.EMAIL_USER}>`,
@@ -21,7 +23,6 @@ export async function sendVerifyLink(token: string, user_id: string, email: stri
             subject: "Verify your Snudget account",
             html: `
             <h>Welcome to Snudget</h>
-            <p>Username: ${email}</p>
             <p>Click <a href="${verifyLink}">here</a> to verify your account</p>
             `,
         });
