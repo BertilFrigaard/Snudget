@@ -65,6 +65,16 @@ export async function insertUser(
     }
 }
 
+export async function deleteUser(user_id: string): Promise<boolean> {
+    try {
+        await pool.query("DELETE FROM users WHERE id = $1", [user_id]);
+    } catch (e: unknown) {
+        logError(e);
+        return false;
+    }
+    return true;
+}
+
 export async function verifyUser(user_id: string): Promise<boolean> {
     try {
         await pool.query("UPDATE users SET verified = TRUE WHERE id = $1", [user_id]);

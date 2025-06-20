@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { getAuthUrl, getState, getUserData } from "../services/auth/googleAuth";
-import { getUserByEmail, insertUser, verifyUser } from "../services/data/userService";
+import { deleteUser, getUserByEmail, insertUser, verifyUser } from "../services/data/userService";
 import { authRoute } from "../middleware/authRoute";
 import { logError } from "../utils/logging";
 import { compare } from "bcrypt";
@@ -65,14 +65,14 @@ router.post("/signup", async (req: Request, res: Response) => {
 
     const user = await getUserByEmail(req.body.email);
     if (user) {
-        // TODO if user not verified replace current entry and update token and resend email
-        console.error("NOT IMPLEMENTED: auth.ts");
-        if (!(1 == 1)) {
-            res.status(500).json({ error: "Something went wrong" });
+        if (user.verified) {
+            res.status(200).json({ error: "Check your email for further instructions" });
             return;
         }
-        res.status(200).json({ error: "Check your email for further instructions" });
-        return;
+        if (!(await deleteUser(user.id))) {
+            res.status(500).json({ error: "Server error" });
+            return;
+        }
     }
 
     const user_id = await insertUser(req.body.username, req.body.email, null, await hash(req.body.password), false);
@@ -81,13 +81,13 @@ router.post("/signup", async (req: Request, res: Response) => {
         const tokenHash = await hash(token);
         if (!(await insertToken(tokenHash, user_id))) {
             res.status(500).json({ error: "Something went wrong" });
-            // TODO delete user
+            await deleteUser(user_id);
             return;
         }
 
         if (!(await sendVerifyLink(token, user_id, req.body.email))) {
-            deleteToken(user_id);
-            // TODO delete user
+            await deleteToken(user_id);
+            await deleteUser(user_id);
             res.status(500).json({ error: "Something went wrong" });
             return;
         }
