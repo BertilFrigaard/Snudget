@@ -1,21 +1,24 @@
+"use client";
 import { PrivateRoute } from "@/components/Routing/PrivateRoute";
 import CustomPieChart from "@/components/Charts/CustomPieChart";
 import Link from "next/link";
+import { useState } from "react";
+import { TiThMenu } from "react-icons/ti";
 
 export default function Home() {
+    const [menuOpen, setMenuOpen] = useState(false);
     return (
         <PrivateRoute userAccess={false} redirectUrl="/dashboard">
-            <div className="bg-white shadow-lg rounded-2xl px-6 sm:px-8 md:px-12 py-20 sm:py-14 lg:mt-20 mb-20 max-w-6xl mx-auto">
-                {/* Header Bar */}
-                <div className="flex flex-col sm:flex-row justify-between items-center mb-10 gap-4">
+            <div className="bg-white shadow-lg rounded-2xl px-6 sm:px-8 md:px-12 py-10 sm:py-14 lg:mt-20 mb-20 max-w-6xl mx-auto">
+                <div className="flex flex-col sm:flex-row justify-between mb-10 gap-4 relative">
                     {/* Logo and Title */}
                     <div className="flex items-center">
                         <div className="w-3 h-7 bg-primary rounded mr-2 sm:mr-3"></div>
                         <h2 className="text-primary font-bold text-2xl sm:text-3xl">Snudget</h2>
                     </div>
 
-                    {/* Auth Buttons */}
-                    <div className="flex gap-3 sm:gap-4">
+                    {/* Desktop Auth Buttons */}
+                    <div className="hidden sm:flex gap-3 sm:gap-4">
                         <Link className="cta-btn-none text-sm sm:text-base" href="/login">
                             Log in
                         </Link>
@@ -23,6 +26,35 @@ export default function Home() {
                             Sign up
                         </Link>
                     </div>
+
+                    {/* Mobile Dropdown Button */}
+                    <button
+                        className="sm:hidden absolute top-0 right-0 mt-1 mr-2"
+                        onClick={() => setMenuOpen(!menuOpen)}
+                        aria-label="Menu"
+                    >
+                        <TiThMenu className="w-6 h-6" />
+                    </button>
+
+                    {/* Mobile Dropdown Menu */}
+                    {menuOpen && (
+                        <div className="sm:hidden absolute top-full right-0 mt-2 bg-white border shadow-md rounded-lg z-50 flex flex-col w-36">
+                            <Link
+                                className="px-4 py-2 hover:bg-gray-100 text-sm border-b"
+                                href="/login"
+                                onClick={() => setMenuOpen(false)}
+                            >
+                                Log in
+                            </Link>
+                            <Link
+                                className="px-4 py-2 hover:bg-gray-100 text-sm"
+                                href="/signup"
+                                onClick={() => setMenuOpen(false)}
+                            >
+                                Sign up
+                            </Link>
+                        </div>
+                    )}
                 </div>
 
                 {/* Hero Section */}
