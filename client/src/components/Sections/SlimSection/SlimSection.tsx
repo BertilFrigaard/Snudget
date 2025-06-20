@@ -7,10 +7,12 @@ export default function SlimSection({
     children,
     title,
     subtitle,
+    link,
 }: {
     children: React.ReactNode;
     title: string;
     subtitle: string;
+    link?: string;
 }) {
     const router = useRouter();
 
@@ -20,7 +22,13 @@ export default function SlimSection({
                 {/* Header */}
                 <div className="flex gap-2 items-center justify-center mb-8">
                     <button
-                        onClick={() => router.back()}
+                        onClick={() => {
+                            if (link) {
+                                router.replace(link);
+                            } else {
+                                router.back();
+                            }
+                        }}
                         className="mr-3 text-gray-500 hover:text-primary transition"
                         aria-label="Go back"
                     >

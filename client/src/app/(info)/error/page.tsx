@@ -16,7 +16,7 @@ function ErrorPageContent() {
         }
     }, [searchParams]);
     return (
-        <SlimSection title="Error" subtitle={error}>
+        <SlimSection title="Error" subtitle={error} link="/">
             {""}
         </SlimSection>
     );

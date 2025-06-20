@@ -1,9 +1,36 @@
 "use client";
+import { UseAuthContext } from "@/contexts/AuthContext";
 import Link from "next/link";
 import { useState } from "react";
 import { TiThMenu } from "react-icons/ti";
 
+const linksLoggedIn = [
+    { title: "Dashboard", link: "dashboard" },
+    { title: "Log Out", link: "logout" },
+];
+const linksLoggedOut = [
+    { title: "Log in", link: "login" },
+    { title: "Sign Up", link: "signup" },
+];
+
+function Links(logged_in: boolean, classes: string, click: () => void) {
+    if (logged_in) {
+        return linksLoggedIn.map((link, key) => (
+            <Link className={classes} onClick={click} href={link.link} key={key}>
+                {link.title}
+            </Link>
+        ));
+    } else {
+        return linksLoggedOut.map((link, key) => (
+            <Link className={classes} onClick={click} href={link.link} key={key}>
+                {link.title}
+            </Link>
+        ));
+    }
+}
+
 export default function MainSection({ children }: { children: React.ReactNode }) {
+    const { user } = UseAuthContext();
     const [menuOpen, setMenuOpen] = useState(false);
 
     return (
@@ -18,15 +45,7 @@ export default function MainSection({ children }: { children: React.ReactNode })
 
                 {/* Desktop Nav Links */}
                 <div className="hidden sm:flex gap-8 items-center">
-                    <Link className="cta-btn-none" href="/dashboard">
-                        Dashboard
-                    </Link>
-                    {/* <Link className="cta-btn-none" href="/profile">
-                        Profile
-                    </Link> */}
-                    <Link className="cta-btn-none" href="/logout">
-                        Log out
-                    </Link>
+                    {Links(user !== null, "cta-btn-none", () => {})}
                 </div>
 
                 {/* Mobile Menu Button */}
@@ -38,23 +57,7 @@ export default function MainSection({ children }: { children: React.ReactNode })
             {/* Mobile Dropdown Menu */}
             {menuOpen && (
                 <div className="sm:hidden absolute top-24 right-12 bg-white border shadow-lg rounded-xl z-50 flex flex-col w-40">
-                    <Link
-                        href="/dashboard"
-                        className="px-4 py-3 border-b hover:bg-gray-100"
-                        onClick={() => setMenuOpen(false)}
-                    >
-                        Dashboard
-                    </Link>
-                    {/* <Link
-                        href="/profile"
-                        className="px-4 py-3 border-b hover:bg-gray-100"
-                        onClick={() => setMenuOpen(false)}
-                    >
-                        Profile
-                    </Link> */}
-                    <Link href="/logout" className="px-4 py-3 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>
-                        Log out
-                    </Link>
+                    {Links(user !== null, "px-4 py-3 hover:bg-gray-100", () => setMenuOpen(false))}
                 </div>
             )}
 
