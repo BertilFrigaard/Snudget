@@ -63,7 +63,11 @@ router.post("/signup", async (req: Request, res: Response) => {
         return;
     }
 
-    const user = await getUserByEmail(req.body.email);
+    const username: string = req.body.username;
+    const email: string = (req.body.email as string).toLowerCase();
+    const password: string = req.body.password;
+
+    const user = await getUserByEmail(email);
     if (user) {
         if (user.verified) {
             res.status(200).json({ error: "Check your email for further instructions" });
@@ -75,7 +79,7 @@ router.post("/signup", async (req: Request, res: Response) => {
         }
     }
 
-    const user_id = await insertUser(req.body.username, req.body.email, null, await hash(req.body.password), false);
+    const user_id = await insertUser(username, email, null, await hash(password), false);
     if (user_id) {
         const token = generateToken();
         const tokenHash = await hash(token);
@@ -108,7 +112,10 @@ router.post("/login", async (req: Request, res: Response) => {
         return;
     }
 
-    const user = await getUserByEmail(req.body.email);
+    const password: string = req.body.password;
+    const email: string = (req.body.email as string).toLowerCase();
+
+    const user = await getUserByEmail(email);
     if (!user) {
         res.status(401).json({ error: "Wrong email or password" });
         return;
@@ -119,7 +126,7 @@ router.post("/login", async (req: Request, res: Response) => {
         return;
     }
 
-    const cmpResult = await compare(req.body.password, user.password_hash);
+    const cmpResult = await compare(password, user.password_hash);
     if (cmpResult === true) {
         if (!user.verified) {
             res.status(403).json({ error: "You are not verified" });

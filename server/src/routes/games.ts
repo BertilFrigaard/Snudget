@@ -23,7 +23,10 @@ router.post("/", authRoute, async (req: Request, res: Response) => {
     }
     const title: string = req.body.title;
     const description: string | null = req.body.description;
+    // TODO remove password functionality completely
     const password: string | null = req.body.password;
+    // TODO Verify date start and end
+    // TODO somewhere make sure games end and that entries can't be made after the end date
     const date: Date = new Date(req.body.date);
     if (isNaN(date.getTime())) {
         res.sendStatus(400);
