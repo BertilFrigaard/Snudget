@@ -9,7 +9,7 @@ export default function Home() {
     const [menuOpen, setMenuOpen] = useState(false);
     return (
         <PrivateRoute userAccess={false} redirectUrl="/dashboard">
-            <div className="bg-white shadow-lg rounded-2xl px-6 sm:px-8 md:px-12 py-10 sm:py-14 lg:mt-20 mb-20 max-w-6xl mx-auto">
+            <div className="bg-white shadow-lg rounded-2xl px-6 sm:px-8 md:px-12 py-6 pb-20 sm:py-14 lg:mt-20 mb-20 max-w-6xl mx-auto">
                 <div className="flex flex-col sm:flex-row justify-between mb-10 gap-4 relative">
                     {/* Logo and Title */}
                     <div className="flex items-center">
@@ -40,7 +40,7 @@ export default function Home() {
                     {menuOpen && (
                         <div className="sm:hidden absolute top-full right-0 mt-2 bg-white border shadow-md rounded-lg z-50 flex flex-col w-36">
                             <Link
-                                className="px-4 py-2 hover:bg-gray-100 text-sm border-b"
+                                className="px-4 py-2 hover:bg-gray-100 text-sm"
                                 href="/login"
                                 onClick={() => setMenuOpen(false)}
                             >
