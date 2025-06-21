@@ -5,12 +5,12 @@ import { useState } from "react";
 import { TiThMenu } from "react-icons/ti";
 
 const linksLoggedIn = [
-    { title: "Dashboard", link: "dashboard" },
-    { title: "Log Out", link: "logout" },
+    { title: "Dashboard", link: "/dashboard" },
+    { title: "Log Out", link: "/logout" },
 ];
 const linksLoggedOut = [
-    { title: "Log in", link: "login" },
-    { title: "Sign Up", link: "signup" },
+    { title: "Log in", link: "/login" },
+    { title: "Sign Up", link: "/signup" },
 ];
 
 function Links(logged_in: boolean, classes: string, click: () => void) {
