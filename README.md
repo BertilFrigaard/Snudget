@@ -5,7 +5,7 @@ Built with modern technologies and hosted on a private VPS, it’s deployed secu
 *By Bertil Frigaard*
 
 ## Try it yourself
-Or you can try it out yourself at
+You can try it out yourself at
 https://snudget.bertilfrigaard.dk
 
 ## About
