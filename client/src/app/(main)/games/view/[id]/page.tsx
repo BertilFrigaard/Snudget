@@ -23,6 +23,7 @@ function ViewGamePage() {
     const [players, setPlayers] = useState<RedactedUser[]>([]);
     const [entries, setEntries] = useState<Entry[]>([]);
     const [scoreboard, setScoreboard] = useState<{ player: RedactedUser; total: number }[]>([]);
+    const [deletePopupState, setDeletePopupState] = useState(0);
 
     useEffect(() => {
         getGameById(params.id).then((game) => {
@@ -71,8 +72,23 @@ function ViewGamePage() {
     };
 
     const deleteClick = async () => {
-        await deleteGame(params.id);
-        redirect("/dashboard");
+        setDeletePopupState(1);
+        setTimeout(async () => {
+            setDeletePopupState((prev) => {
+                if (prev === 1) {
+                    return 2;
+                } else {
+                    return 0;
+                }
+            });
+        }, 5000);
+    };
+
+    const confirmDeleteClick = async () => {
+        if (deletePopupState === 2) {
+            await deleteGame(params.id);
+            redirect("/dashboard");
+        }
     };
 
     const leaveClick = async () => {
@@ -90,7 +106,6 @@ function ViewGamePage() {
     if (!game || !entries || !players) {
         return <Loading />;
     }
-    console.log(game, entries, players);
 
     return (
         <MainSection>
@@ -150,6 +165,41 @@ function ViewGamePage() {
                     )}
                 </section>
             </div>
+            {deletePopupState === 1 && (
+                <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-xl shadow-lg max-w-sm w-full text-center">
+                        <h2 className="text-xl font-semibold mb-4 text-gray-900">Confirm Deletion</h2>
+                        <p className="text-gray-700 mb-6">
+                            Are you sure you want to delete this game? This action cannot be undone.
+                        </p>
+                        <p className="text-gray-700 mb-6">Confirmation will be available in 5 seconds.</p>
+                        <div className="flex justify-center gap-4">
+                            <button onClick={() => setDeletePopupState(0)} className="cta-btn-full">
+                                Cancel
+                            </button>
+                            <button className="cta-btn-colorless bg-error text-white animate-bounce">...</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {deletePopupState === 2 && (
+                <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-xl shadow-lg max-w-sm w-full text-center">
+                        <h2 className="text-xl font-semibold mb-4 text-gray-900">Confirm Deletion</h2>
+                        <p className="text-gray-700 mb-6">
+                            Are you sure you want to delete this game? This action cannot be undone.
+                        </p>
+                        <div className="flex justify-center gap-4">
+                            <button onClick={() => setDeletePopupState(0)} className="cta-btn-full">
+                                Cancel
+                            </button>
+                            <button onClick={confirmDeleteClick} className="cta-btn-colorless bg-error text-white">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </MainSection>
     );
 }
