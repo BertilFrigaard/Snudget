@@ -53,6 +53,17 @@ export function prepareForLineChart(entries: Entry[], players: RedactedUser[]): 
             continue;
         }
         if (workingPoint.name && workingPoint.name !== curEntry.date) {
+            //Fix missing player
+            for (const player of players) {
+                if (!workingPoint[player.username]) {
+                    if (runningPlayers[player.id]) {
+                        workingPoint[player.username] = runningPlayers[player.id];
+                    } else {
+                        workingPoint[player.username] = 0;
+                    }
+                }
+            }
+
             data.push(workingPoint);
             workingPoint = {};
         }
@@ -65,7 +76,21 @@ export function prepareForLineChart(entries: Entry[], players: RedactedUser[]): 
         workingPoint[curEntry.name] = runningPlayers[curEntry.id];
     }
     if (workingPoint.name) {
+        // Fix missing player
+        for (const player of players) {
+            if (!workingPoint[player.username]) {
+                if (runningPlayers[player.id]) {
+                    workingPoint[player.username] = runningPlayers[player.id];
+                } else {
+                    workingPoint[player.username] = 0;
+                }
+            }
+        }
+
         data.push(workingPoint);
     }
+
+    console.log(players);
+
     return data;
 }
